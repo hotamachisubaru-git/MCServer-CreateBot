@@ -3,21 +3,22 @@ import { SlashCommandBuilder } from "discord.js";
 export const commandBuilders = [
   new SlashCommandBuilder()
     .setName("mc-wizard")
-    .setDescription("Create a Minecraft server through an interactive wizard."),
+    .setDescription("対話形式でMinecraftサーバーの作成/既存追加を行います。"),
 
   new SlashCommandBuilder()
     .setName("mc-start")
-    .setDescription("Start a created Minecraft server.")
+    .setDescription("管理対象のMinecraftサーバーを起動します。")
     .addStringOption((option) =>
       option
         .setName("server")
-        .setDescription("Server name")
+        .setDescription("サーバー名")
+        .setAutocomplete(true)
         .setRequired(true),
     )
     .addIntegerOption((option) =>
       option
         .setName("memory")
-        .setDescription("Memory in MB (optional override)")
+        .setDescription("メモリ(MB) 上書き")
         .setMinValue(512)
         .setMaxValue(65536)
         .setRequired(false),
@@ -25,41 +26,44 @@ export const commandBuilders = [
 
   new SlashCommandBuilder()
     .setName("mc-stop")
-    .setDescription("Stop a running Minecraft server.")
+    .setDescription("起動中のMinecraftサーバーを停止します。")
     .addStringOption((option) =>
       option
         .setName("server")
-        .setDescription("Server name")
+        .setDescription("サーバー名")
+        .setAutocomplete(true)
         .setRequired(true),
     ),
 
   new SlashCommandBuilder()
     .setName("mc-status")
-    .setDescription("Show status of a Minecraft server.")
+    .setDescription("Minecraftサーバーの状態を表示します。")
     .addStringOption((option) =>
       option
         .setName("server")
-        .setDescription("Server name")
+        .setDescription("サーバー名")
+        .setAutocomplete(true)
         .setRequired(true),
     ),
 
   new SlashCommandBuilder()
     .setName("mc-list")
-    .setDescription("List all created Minecraft servers."),
+    .setDescription("管理対象のMinecraftサーバー一覧を表示します。"),
 
   new SlashCommandBuilder()
     .setName("mc-logs")
-    .setDescription("Show recent logs from a Minecraft server.")
+    .setDescription("Minecraftサーバーの最新ログを表示します。")
     .addStringOption((option) =>
       option
         .setName("server")
-        .setDescription("Server name")
+        .setDescription("サーバー名")
+        .setAutocomplete(true)
         .setRequired(true),
     )
     .addIntegerOption((option) =>
       option
         .setName("lines")
-        .setDescription("How many recent lines")
+        .setDescription("表示行数")
         .setMinValue(1)
         .setMaxValue(80)
         .setRequired(false),

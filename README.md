@@ -1,48 +1,45 @@
-# Minecraft Discord Bot (Interactive Server Creation)
+# Minecraft管理Discord Bot
 
-This bot creates and manages local Minecraft Java Edition servers from Discord.
-The creation flow is interactive: run `/mc-wizard`, fill the modal, then confirm with a button.
+DiscordからローカルのMinecraftサーバーを管理するBotです。  
+`/mc-wizard` でBotの質問に順番に答えると、最終確認後にサーバー作成または既存サーバー追加を実行します。
 
-## Features
+## 主な機能
 
-- Interactive server creation (`/mc-wizard`)
-- Start server (`/mc-start`)
-- Stop server (`/mc-stop`)
-- Check status (`/mc-status`)
-- List created servers (`/mc-list`)
-- Show recent logs (`/mc-logs`)
+- 対話形式ウィザード（作成/既存追加）
+  - `/mc-wizard`
+  - Botが質問を出し、ユーザーが回答して進行
+  - 最終確認で実行
+- 複数サーバー管理
+  - `/mc-start`, `/mc-stop`, `/mc-status`, `/mc-logs` の `server` 引数はオートコンプリート対応
+  - サーバーが複数ある場合、候補がドロップダウン表示される
+- フォーク対応
+  - `vanilla`
+  - `paper`
+  - `purpur`
+- 既存サーバー追加（インポート）
+  - 既存サーバーディレクトリのパスとjar名を指定して管理対象に追加
 
-## How It Works
+## 動作要件
 
-- The bot runs on the same machine that will host Minecraft servers.
-- For creation, it downloads the official `server.jar` for the selected version from Mojang metadata.
-- It creates:
-  - `server.jar`
-  - `eula.txt` with `eula=true`
-  - `server.properties`
-  - `bot-config.json`
+- Node.js 20以上
+- Java 17以上（`JAVA_PATH` で指定可能）
+- Discord Botアプリ
 
-## Requirements
+## セットアップ
 
-- Node.js 20+
-- Java 17+ (Java path must be reachable by `JAVA_PATH`)
-- A Discord bot application
-
-## Setup
-
-1. Install dependencies:
+1. 依存関係をインストール
 
 ```bash
 npm install
 ```
 
-2. Copy env template and edit values:
+2. 環境変数ファイルを作成
 
 ```bash
 copy .env.example .env
 ```
 
-3. Set `.env`:
+3. `.env` を設定
 
 ```env
 DISCORD_TOKEN=your_bot_token
@@ -52,35 +49,45 @@ MC_BASE_DIR=./servers
 JAVA_PATH=java
 ```
 
-Notes:
-- Keep `DISCORD_GUILD_ID` for fast test command updates (guild scope).
-- Remove `DISCORD_GUILD_ID` to register globally (can take longer to appear).
+- `DISCORD_GUILD_ID` を設定すると、テスト用Guildに即時反映されます。
+- `DISCORD_GUILD_ID` を空にするとグローバル登録になります（反映に時間がかかる場合あり）。
 
-4. Register slash commands:
+4. スラッシュコマンド登録
 
 ```bash
 npm run register
 ```
 
-5. Start bot:
+5. Bot起動
 
 ```bash
 npm start
 ```
 
-## Commands
+## コマンド一覧
 
 - `/mc-wizard`
-  - Opens an interactive modal to input server settings.
-  - After submit, press **Create Server** to execute.
-- `/mc-start server:<name> [memory:<mb>]`
-- `/mc-stop server:<name>`
-- `/mc-status server:<name>`
+  - 対話形式で以下のどちらかを実行
+  - 新規サーバー作成（vanilla/paper/purpur）
+  - 既存サーバー追加（管理対象に登録）
 - `/mc-list`
-- `/mc-logs server:<name> [lines:<n>]`
+  - 管理対象サーバー一覧を表示
+- `/mc-start server:<サーバー名> [memory:<MB>]`
+  - サーバー起動
+- `/mc-stop server:<サーバー名>`
+  - サーバー停止
+- `/mc-status server:<サーバー名>`
+  - 状態確認
+- `/mc-logs server:<サーバー名> [lines:<行数>]`
+  - 最新ログ表示
 
-## Security / Operations Notes
+## 保存される設定
 
-- Any user who can use slash commands in the server can operate this bot unless you restrict command permissions in Discord.
-- Open the selected Minecraft port on your firewall/router if players connect from outside your network.
-- You are responsible for complying with Mojang/Minecraft EULA and terms.
+`MC_BASE_DIR` 配下にサーバーごとの `bot-config.json` が作成されます。  
+作成したサーバーは同ディレクトリ内に `server.jar`, `eula.txt`, `server.properties` も生成されます。
+
+## 運用上の注意
+
+- コマンド権限を制限しない場合、Discordサーバー内でBotコマンド実行権限を持つユーザーが操作できます。
+- 外部接続が必要な場合は、ポート開放やファイアウォール設定が必要です。
+- Minecraft関連の利用規約/EULA順守は運用者責任です。
